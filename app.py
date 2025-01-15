@@ -1,36 +1,20 @@
-from tweety import TwitterAsync
-from tweety import types
+import time
 import asyncio
+from twikit.client.client import Client
+from .data import trending_topics
+from .data import fetch_tweet_data
 
-twitter_client = TwitterAsync("session")
-async def start_twitter_client():
-    await twitter_client.start("gcrespe", "199146658732")
+twikit_client = Client(language='en-US')
 
 async def main():
-    await start_twitter_client()
-    all_tweets: list[types.Tweet] = await twitter_client.get_tweets("elonmusk")
-    for tweet in all_tweets:
-        
-        print("Tweet ", tweet.id, " -----------------------------")
-        tweet_json = {
-            "id": tweet.id,
-            "author": tweet.author.username,
-            "text": tweet.text,
-            "likes": tweet.likes,
-            "replies": tweet.reply_counts,
-            "retweeted": tweet.retweeted_tweet != None
-        }
-        print(tweet_json)
-
-        analytics = await twitter_client.get_tweet_analytics(tweet_id=tweet.id)
-        
-        print(analytics)
-        print("")
-    trends = await twitter_client.get_trends() #TODO verificar se tem como mudar as trends para outro lugar do mundo
-    print(trends)        
-
-    trends = await twitter_client.get_trends() 
-    print(trends)   
-
+    data = []
+    start_time = time.time()
+    for topic in trending_topics:
+        print(topic)
+        topic_data = await fetch_tweet_data(topic, 'Latest', twikit_client)
+        data.append(topic_data)
+    print(data)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    twikit_client.logout()
 
 asyncio.run(main())
