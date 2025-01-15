@@ -1,5 +1,6 @@
 import redis
 import json
+from util.string_utils import strip_emoji
 
 redis_client = redis.Redis(host='redis-17941.c308.sa-east-1-1.ec2.redns.redis-cloud.com', port=17941, password='okjCxnSNLBIrsQ3PuaQyjLmlSPVDoDgn')
 
@@ -21,8 +22,8 @@ async def fetch_tweet_data(query, type, client, max_tweets=100):
             single_tweet_data = await client.get_tweet_by_id(tweet_id=tweet.id)
 
             tweet_data = {
-                'id': single_tweet_data.id,
-                'text': single_tweet_data.text,
+                'id': single_tweet_data.id, 
+                'text': strip_emoji(single_tweet_data.text), #mostimportant
                 'view_count': single_tweet_data.view_count,
                 'retweet_count': single_tweet_data.retweet_count,
                 'quote_count': single_tweet_data.quote_count,

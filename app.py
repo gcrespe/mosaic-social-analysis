@@ -3,7 +3,6 @@ import asyncio
 from twikit.client.client import Client
 from .data import trending_topics
 from .data import fetch_tweet_data
-
 twikit_client = Client(language='en-US')
 
 async def main():
